@@ -1,0 +1,1 @@
+Arduino projects requires VirtualWire (without crc16.h header) jeelib and PinChange libraries
