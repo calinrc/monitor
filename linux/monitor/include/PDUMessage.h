@@ -22,7 +22,7 @@ class PDUMessage
 public:
     PDUMessage(const char* szPhoneNo, const char* szSmsc);
     virtual ~PDUMessage();
-    char* const getPDU(char* szMessage, size_t* pduLenght);
+    const char* const getPDU(char* szMessage);
 
 private:
     char* getTimeString();

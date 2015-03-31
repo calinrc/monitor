@@ -164,6 +164,7 @@ int GSMUtils::semiDecimalOctets(const  char* sdOctets, size_t sdSize,  char* con
 
     for (size_t i = 0; i < (finalLength / 2); i++)
     {
+        char oddPosVal = sdOctets[2 * i];
         if (odd && (i * 2 == finalLength - 2))
         {
             encodedBytes[2 * i] = 'F';
@@ -171,7 +172,7 @@ int GSMUtils::semiDecimalOctets(const  char* sdOctets, size_t sdSize,  char* con
         {
             encodedBytes[2 * i] = sdOctets[2 * i + 1];
         }
-        encodedBytes[2 * i + 1] = sdOctets[2 * i];
+        encodedBytes[2 * i + 1] = oddPosVal;
     }
 
     return 0;

@@ -23,8 +23,12 @@ PDUMessage::PDUMessage(const char* szPhoneNo, const char* szSmsc) :
 {
     size_t dPhoneFormat = 0;
     size_t dSMSCFormat = 0;
+
     dPhoneFormat = (szPhoneNo[0] == '+' || (szPhoneNo[0] == '0' && szPhoneNo[1] == '0')) ? INTERNATIONAL_PHONE_FORMAT : LOCAL_PHONE_FORMAT;
     dSMSCFormat = (szSmsc[0] == '+' || (szSmsc[0] == '0' && szSmsc[1] == '0')) ? INTERNATIONAL_PHONE_FORMAT : LOCAL_PHONE_FORMAT;
+
+    const char* szPhoneNoNew = (dPhoneFormat == LOCAL_PHONE_FORMAT) ? szPhoneNo : (szPhoneNo[0] == '+') ? szPhoneNo + 1 : szPhoneNo + 2;
+    const char* szSmscNew = (dSMSCFormat == LOCAL_PHONE_FORMAT) ? szSmsc : (szSmsc[0] == '+') ? szSmsc + 1 : szSmsc + 2;
 
     char smscAdress[MAX_PDU_LEN];
     char phoneAdress[MAX_PDU_LEN];
@@ -33,12 +37,12 @@ PDUMessage::PDUMessage(const char* szPhoneNo, const char* szSmsc) :
     size_t encodedBytesSmsc = sizeof(smscAdress);
     size_t encodedBytesPhoneNo = sizeof(phoneAdress);
 
-    GSMUtils::semiDecimalOctets(szSmsc, strlen(szSmsc), smscAdress, &encodedBytesSmsc);
+    GSMUtils::semiDecimalOctets(szSmscNew, strlen(szSmscNew), smscAdress, &encodedBytesSmsc);
     smscAdress[encodedBytesSmsc] = '\0';
     size_t smscLeng = (encodedBytesSmsc + 2) / 2;
 
-    size_t phoneNoLen = strlen(szPhoneNo);
-    GSMUtils::semiDecimalOctets(szPhoneNo, phoneNoLen, phoneAdress, &encodedBytesPhoneNo);
+    size_t phoneNoLen = strlen(szPhoneNoNew);
+    GSMUtils::semiDecimalOctets(szPhoneNoNew, phoneNoLen, phoneAdress, &encodedBytesPhoneNo);
     phoneAdress[encodedBytesPhoneNo] = '\0';
 
     sprintf(m_szPduMessage, "%.2X%.2X%s%.2X%.2X%.2X%s%.2X%.2X", (uint) smscLeng, (uint) dSMSCFormat, smscAdress, 0x04, (uint) phoneNoLen, (uint) dPhoneFormat, phoneAdress,
@@ -58,8 +62,8 @@ char* PDUMessage::getTimeString()
     char* cBuff = new char[15];
     time_t zaman;
     struct tm *gmttime;
-    static struct timeval _t;
-    static struct timezone tz;
+    struct timeval _t;
+    struct timezone tz;
 
     time(&zaman);
     gmttime = (struct tm *) gmtime(&zaman);
@@ -71,21 +75,29 @@ char* PDUMessage::getTimeString()
 
 }
 
-char* const PDUMessage::getPDU(char* szMessage, size_t* pduLenght)
+const char* const PDUMessage::getPDU(char* szMessage)
 {
     m_szPduMessage[m_metaDataLen] = '\0';
     char* szTime = getTimeString();
+    size_t timeLen = 14;
+    GSMUtils::semiDecimalOctets(szTime, timeLen, szTime, &timeLen);
+    szTime[timeLen] = '\0';
     size_t msgLen = strlen(szMessage);
     char asciiMsg[MAX_PDU_LEN];
+    char gsm7BitMsg[MAX_PDU_LEN];
+    char hexBytesMsg[2 * MAX_PDU_LEN];
     size_t asciiLen = MAX_PDU_LEN;
-    size_t asciiLen2= MAX_PDU_LEN;
+    size_t gsm7BitsLen = MAX_PDU_LEN;
+    size_t hexBytesMsgLen = 2 * MAX_PDU_LEN;
 
     GSMUtils::asciiToGsmCode(szMessage, msgLen, asciiMsg, &asciiLen);
     asciiMsg[asciiLen] = '\0';
-    GSMUtils::encodeinGsm7Bit(asciiMsg, asciiLen, asciiMsg, &asciiLen2);
+    GSMUtils::encodeinGsm7Bit(asciiMsg, asciiLen, gsm7BitMsg, &gsm7BitsLen);
 
-    sprintf(m_szPduMessage, "%s%s%.2X%s",m_szPduMessage, szTime, (uint) msgLen, asciiMsg);
+    GSMUtils::bytesToHex(gsm7BitMsg, gsm7BitsLen, hexBytesMsg, &hexBytesMsgLen);
+    hexBytesMsg[hexBytesMsgLen]='\0';
+
+    sprintf(m_szPduMessage, "%s%s%.2X%s", m_szPduMessage, szTime, (uint) msgLen, hexBytesMsg);
     delete[] szTime;
-    *pduLenght = strlen(m_szPduMessage);
     return m_szPduMessage;
 }

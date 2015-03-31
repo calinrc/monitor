@@ -10,13 +10,15 @@
 
  ********************************************************************************************************************* */
 
+#include <unistd.h>
+#include <string.h>
+
 #include "Logger.h"
 #include "I2CDevice.h"
 #include "gendef.h"
-#include <unistd.h>
 
 #include "GSMUtils.h"
-#include <string.h>
+#include "PDUMessage.h"
 
 #define I2C_ADDR 0x08
 #define I2C_DEVICE_NAME "/dev/i2c-1"
@@ -75,10 +77,10 @@ int main()
 
     printf("Enter ...\n");
 
-     char bytes[] = { '1', '2', '3', '4', '5', '6', '7', '8', '1', '2', '3', '4', '5', '6', '7', '8','1' };
-     char encodedBytes[257];
-     char gSM7BitBytes[257];
-     char decimalSemiOctets[257];
+    char bytes[] = { '1', '2', '3', '4', '5', '6', '7', '8', '1', '2', '3', '4', '5', '6', '7', '8', '1' };
+    char encodedBytes[257];
+    char gSM7BitBytes[257];
+    char decimalSemiOctets[257];
 
 //    for (size_t i = 0; i < 128; i++)
 //    {
@@ -117,12 +119,17 @@ int main()
     result = GSMUtils::semiDecimalOctets(bytes, sizeof(bytes), decimalSemiOctets, &decimalSemiOctetsSize);
     if (result == 0)
     {
-        decimalSemiOctets[decimalSemiOctetsSize]='\0';
+        decimalSemiOctets[decimalSemiOctetsSize] = '\0';
         printf("\nDecimal semi octets: %s", decimalSemiOctets);
     } else
     {
         printf("\nFail to compute decimal semi octets\n");
     }
+
+    PDUMessage* msg = new PDUMessage("0040123450102", "+331213141516");
+    char* const szMsg= (char*)"TestMessage";
+    const char* const pdu = msg->getPDU(szMsg);
+    printf("PDU for TestMessage is: %s", pdu);
 
     return 0;
 
