@@ -126,8 +126,17 @@ int main()
         printf("\nFail to compute decimal semi octets\n");
     }
 
+    char gsm7BitMsg[] = { 1, 2, 3, 4, 0xFF, -1, 0xA1 };
+    size_t gsm7BitsLen = sizeof(gsm7BitMsg);
+
+    char hexBytesMsg[2 * sizeof(gsm7BitMsg)];
+    size_t hexBytesMsgLen = sizeof(hexBytesMsg);
+
+    GSMUtils::bytesToHex(gsm7BitMsg, gsm7BitsLen, hexBytesMsg, &hexBytesMsgLen);
+    hexBytesMsg[hexBytesMsgLen] = '\0';
+
     PDUMessage* msg = new PDUMessage("0040123450102", "+331213141516");
-    char* const szMsg= (char*)"TestMessage";
+    char* const szMsg = (char*) "TestMessage";
     const char* const pdu = msg->getPDU(szMsg);
     printf("PDU for TestMessage is: %s", pdu);
 

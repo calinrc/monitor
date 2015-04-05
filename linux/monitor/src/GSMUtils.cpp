@@ -15,10 +15,9 @@
 #include <math.h>
 #include <sys/types.h>
 
-
 #define EXTEND_ESC  0x1B
 
- char const GSMUtils::ASCII_GSM_alfabeth[] = { 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
+char const GSMUtils::ASCII_GSM_alfabeth[] = { 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
 
 '\n', 0x11, 0x1B, '\r', 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
 
@@ -44,7 +43,7 @@
 
 'x', 'y', 'z', 0x1B, 0x1B, 0x1B, 0x1B, 0x11 };
 
- char const GSMUtils::ASCII_GSM_extended_alfabeth[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+char const GSMUtils::ASCII_GSM_extended_alfabeth[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
 0, 0, 0x0A, 0, 0, 0, 0, 0, 0, 0,
 
@@ -70,7 +69,7 @@
 
 0, 0, 0, 0x28, 0x40, 0x29, 0x3D, 0 };
 
-int GSMUtils::asciiToGsmCode( char* bytesList, size_t bytesLenght,  char* encoddedBytes, size_t* encodedLength)
+int GSMUtils::asciiToGsmCode(char* bytesList, size_t bytesLenght, char* encoddedBytes, size_t* encodedLength)
 {
     if (*encodedLength < bytesLenght)
     {
@@ -84,15 +83,15 @@ int GSMUtils::asciiToGsmCode( char* bytesList, size_t bytesLenght,  char* encodd
         {
             return -2; // we do not support extended ascii or other encoding
         }
-        encoddedBytes[i + extendeUsedBytes] = ASCII_GSM_alfabeth[(uint)bytesList[i]];
-        if (ASCII_GSM_alfabeth[(uint)bytesList[i]] == EXTEND_ESC)
+        encoddedBytes[i + extendeUsedBytes] = ASCII_GSM_alfabeth[(uint) bytesList[i]];
+        if (ASCII_GSM_alfabeth[(uint) bytesList[i]] == EXTEND_ESC)
         {
             extendeUsedBytes++;
             if (*encodedLength < bytesLenght + extendeUsedBytes)
             {
                 return -3; // not enough space in output buffer;
             }
-            encoddedBytes[i + extendeUsedBytes] = ASCII_GSM_extended_alfabeth[(uint)bytesList[i]];
+            encoddedBytes[i + extendeUsedBytes] = ASCII_GSM_extended_alfabeth[(uint) bytesList[i]];
         }
 
     }
@@ -101,7 +100,7 @@ int GSMUtils::asciiToGsmCode( char* bytesList, size_t bytesLenght,  char* encodd
 
 }
 
-int GSMUtils::bytesToHex(const  char* const bytesList, size_t bytesLenght,  char* const encoddedBytes, size_t* encodedLength)
+int GSMUtils::bytesToHex(const char* const bytesList, size_t bytesLenght, char* const encoddedBytes, size_t* encodedLength)
 {
     if (*encodedLength < 2 * bytesLenght)
     {
@@ -110,16 +109,16 @@ int GSMUtils::bytesToHex(const  char* const bytesList, size_t bytesLenght,  char
     *encodedLength = 2 * bytesLenght;
     for (size_t i = 0; i < bytesLenght; i++)
     {
-         char val = bytesList[i] >> 4;
+        unsigned char val = (unsigned char) bytesList[i] >> 4;
         encoddedBytes[2 * i] = (val <= 9) ? '0' + val : 55 + val; //55 = 'A'-10
 
-        val = (bytesList[i] & 0x0F);
+        val = (unsigned char) (bytesList[i] & 0x0F);
         encoddedBytes[2 * i + 1] = (val <= 9) ? '0' + val : 55 + val;
     }
     return 0;
 }
 
-int GSMUtils::encodeinGsm7Bit(const  char* const bytesList, size_t bytesLenght,  char* const encoddedBytes, size_t* encodedLength)
+int GSMUtils::encodeinGsm7Bit(const char* const bytesList, size_t bytesLenght, char* const encoddedBytes, size_t* encodedLength)
 {
     if (*encodedLength < ceil(7 * bytesLenght) / 8) //round up the input length multiplies with 7/8
     {
@@ -130,7 +129,7 @@ int GSMUtils::encodeinGsm7Bit(const  char* const bytesList, size_t bytesLenght, 
     for (size_t i = 0; i < bytesLenght; i++)
     {
         //assume that each value from array is already from gsm 7 bit alphabet so only last 7 bits are used
-         char val = bytesList[i] & 0x7F;
+        char val = bytesList[i] & 0x7F;
         size_t shiftSize = i % 8;
         encoddedBytes[index] = val >> shiftSize;
         if (index > 0)
@@ -147,7 +146,7 @@ int GSMUtils::encodeinGsm7Bit(const  char* const bytesList, size_t bytesLenght, 
     return 0;
 }
 
-int GSMUtils::semiDecimalOctets(const  char* sdOctets, size_t sdSize,  char* const encodedBytes, size_t* encodedLength)
+int GSMUtils::semiDecimalOctets(const char* sdOctets, size_t sdSize, char* const encodedBytes, size_t* encodedLength)
 {
     size_t finalLength = sdSize;
     bool odd = false;
