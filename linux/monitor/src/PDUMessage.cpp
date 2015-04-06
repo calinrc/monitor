@@ -45,8 +45,11 @@ PDUMessage::PDUMessage(const char* szPhoneNo, const char* szSmsc) :
     GSMUtils::semiDecimalOctets(szPhoneNoNew, phoneNoLen, phoneAdress, &encodedBytesPhoneNo);
     phoneAdress[encodedBytesPhoneNo] = '\0';
 
-    sprintf(m_szPduMessage, "%.2X%.2X%s%.2X%.2X%.2X%s%.2X%.2X", (uint) smscLeng, (uint) dSMSCFormat, smscAdress, 0x04, (uint) phoneNoLen, (uint) dPhoneFormat, phoneAdress,
-    PROTOCOL_ID,
+    //0x11 - TP-MTI = SMS-SEND TP-VPF = Relative format used for the Validity Period.
+    //0x00 - TP-MR
+    sprintf(m_szPduMessage, "%.2X%.2X%s%.2X%.2X%.2X%.2X%s%.2X%.2X%.2X%.2X", (uint) smscLeng, (uint) dSMSCFormat, smscAdress, 0x11, 0x00, (uint) phoneNoLen, (uint) dPhoneFormat,
+            phoneAdress,
+            PROTOCOL_ID,
             DATA_ENC_SCHEME);
     m_metaDataLen = strlen(m_szPduMessage);
 
@@ -57,31 +60,10 @@ PDUMessage::~PDUMessage()
 
 }
 
-char* PDUMessage::getTimeString()
-{
-    char* cBuff = new char[15];
-    time_t zaman;
-    struct tm *gmttime;
-    struct timeval _t;
-    struct timezone tz;
-
-    time(&zaman);
-    gmttime = (struct tm *) gmtime(&zaman);
-    gettimeofday(&_t, &tz);
-
-    sprintf(cBuff, "%.2d%.2d%.2d%.2d%.2d%.2d%.2d", (gmttime->tm_year % 100), gmttime->tm_mon, gmttime->tm_mday, gmttime->tm_hour, gmttime->tm_min, gmttime->tm_sec, 0);
-    cBuff[14] = '\0';
-    return cBuff;
-
-}
 
 const char* const PDUMessage::getPDU(char* szMessage)
 {
     m_szPduMessage[m_metaDataLen] = '\0';
-    char* szTime = getTimeString();
-    size_t timeLen = 14;
-    GSMUtils::semiDecimalOctets(szTime, timeLen, szTime, &timeLen);
-    szTime[timeLen] = '\0';
     size_t msgLen = strlen(szMessage);
     char asciiMsg[MAX_PDU_LEN];
     char gsm7BitMsg[MAX_PDU_LEN];
@@ -95,9 +77,8 @@ const char* const PDUMessage::getPDU(char* szMessage)
     GSMUtils::encodeinGsm7Bit(asciiMsg, asciiLen, gsm7BitMsg, &gsm7BitsLen);
 
     GSMUtils::bytesToHex(gsm7BitMsg, gsm7BitsLen, hexBytesMsg, &hexBytesMsgLen);
-    hexBytesMsg[hexBytesMsgLen]='\0';
+    hexBytesMsg[hexBytesMsgLen] = '\0';
 
-    sprintf(m_szPduMessage, "%s%s%.2X%s", m_szPduMessage, szTime, (uint) msgLen, hexBytesMsg);
-    delete[] szTime;
+    sprintf(m_szPduMessage, "%s%.2X%s", m_szPduMessage, (uint) msgLen, hexBytesMsg);
     return m_szPduMessage;
 }

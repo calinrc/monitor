@@ -25,8 +25,6 @@ public:
     const char* const getPDU(char* szMessage);
 
 private:
-    char* getTimeString();
-
     char m_szPduMessage[MAX_PDU_LEN];
     size_t m_metaDataLen;
 };

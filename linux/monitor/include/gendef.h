@@ -47,7 +47,7 @@ enum W_CLIENT_EVENT
 #define LOCAL_PHONE_FORMAT 0x81
 #define INTERNATIONAL_PHONE_FORMAT 0x91
 #define MAX_PDU_LEN 170
-#define PROTOCOL_ID 0x00
-#define DATA_ENC_SCHEME 0x00
+#define PROTOCOL_ID 0x00 //default SMS protocol
+#define DATA_ENC_SCHEME 0x00 //default GSM alphabet
 
 #endif /* INCLUDE_GENDEF_H_ */
