@@ -14,14 +14,23 @@
 #define INCLUDE_SMSHANDLER_H_
 
 #include "gendef.h"
+#include "Serial.h"
 
 class SMSHandler
 {
 public:
     SMSHandler();
     virtual ~SMSHandler();
-    virtual SMSError init(const char* szdeviceName);
+    virtual SMSError init(const char* szdeviceName, unsigned long int speed = 115200);
     virtual SMSError sendMessage(const char* szPhoneNo, const char* szMessage);
+private:
+
+    void sendAtCommand(const char* szAtCommand);
+
+    char m_buff[MAX_PDU_LEN];
+
+    char m_smscNo[20];
+    Serial m_serial;
 };
 
 #endif /* INCLUDE_SMSHANDLER_H_ */

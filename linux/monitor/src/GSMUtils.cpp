@@ -69,7 +69,7 @@ char const GSMUtils::ASCII_GSM_extended_alfabeth[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 0, 0, 0, 0x28, 0x40, 0x29, 0x3D, 0 };
 
-int GSMUtils::asciiToGsmCode(char* bytesList, size_t bytesLenght, char* encoddedBytes, size_t* encodedLength)
+int GSMUtils::asciiToGsmCode(const char* bytesList, size_t bytesLenght, char* encoddedBytes, size_t* encodedLength)
 {
     if (*encodedLength < bytesLenght)
     {

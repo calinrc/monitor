@@ -19,7 +19,7 @@
 #include <stdio.h>
 
 PDUMessage::PDUMessage(const char* szPhoneNo, const char* szSmsc) :
-        m_metaDataLen(0)
+        m_metaDataLen(0),smscLeng(0)
 {
     size_t dPhoneFormat = 0;
     size_t dSMSCFormat = 0;
@@ -39,7 +39,7 @@ PDUMessage::PDUMessage(const char* szPhoneNo, const char* szSmsc) :
 
     GSMUtils::semiDecimalOctets(szSmscNew, strlen(szSmscNew), smscAdress, &encodedBytesSmsc);
     smscAdress[encodedBytesSmsc] = '\0';
-    size_t smscLeng = (encodedBytesSmsc + 2) / 2;
+    smscLeng = (encodedBytesSmsc + 2) / 2;
 
     size_t phoneNoLen = strlen(szPhoneNoNew);
     GSMUtils::semiDecimalOctets(szPhoneNoNew, phoneNoLen, phoneAdress, &encodedBytesPhoneNo);
@@ -47,7 +47,7 @@ PDUMessage::PDUMessage(const char* szPhoneNo, const char* szSmsc) :
 
     //0x11 - TP-MTI = SMS-SEND TP-VPF = Relative format used for the Validity Period.
     //0x00 - TP-MR
-    sprintf(m_szPduMessage, "%.2X%.2X%s%.2X%.2X%.2X%.2X%s%.2X%.2X%.2X%.2X", (uint) smscLeng, (uint) dSMSCFormat, smscAdress, 0x11, 0x00, (uint) phoneNoLen, (uint) dPhoneFormat,
+    sprintf(m_szPduMessage, "%.2X%.2X%s%.2X%.2X%.2X%.2X%s%.2X%.2X", (uint) smscLeng, (uint) dSMSCFormat, smscAdress, 0x11, 0x00, (uint) phoneNoLen, (uint) dPhoneFormat,
             phoneAdress,
             PROTOCOL_ID,
             DATA_ENC_SCHEME);
@@ -60,8 +60,7 @@ PDUMessage::~PDUMessage()
 
 }
 
-
-const char* const PDUMessage::getPDU(char* szMessage)
+const char* const PDUMessage::getPDU(const char* szMessage)
 {
     m_szPduMessage[m_metaDataLen] = '\0';
     size_t msgLen = strlen(szMessage);
@@ -81,4 +80,8 @@ const char* const PDUMessage::getPDU(char* szMessage)
 
     sprintf(m_szPduMessage, "%s%.2X%s", m_szPduMessage, (uint) msgLen, hexBytesMsg);
     return m_szPduMessage;
+}
+
+size_t PDUMessage::getSmscInfoLen(){
+    return smscLeng;
 }

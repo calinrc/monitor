@@ -33,7 +33,7 @@ Serial::~Serial()
     this->close();
 }
 
-int Serial::open(char *port, unsigned long speed)
+int Serial::open(const char *port, unsigned long speed)
 {
     m_fd = ::open(port, O_RDWR | O_NOCTTY | O_NDELAY);
     if (m_fd == -1)
@@ -75,7 +75,7 @@ int Serial::open(char *port, unsigned long speed)
     return tcsetattr(m_fd, TCSANOW, &t_opt);
 }
 
-int Serial::write(char *buf, int size)
+int Serial::write(const char *buf, int size)
 {
     return ::write(m_fd, buf, size);
 }

@@ -21,8 +21,8 @@ public:
 
 
     //use numeric values for error code . Usually -1 means error.
-    int open(char *port, unsigned long speed);
-    int write(char *buf, int size);
+    int open(const char *port, unsigned long speed);
+    int write(const char *buf, int size);
     int read(char *buf, int size);
     int close();
 

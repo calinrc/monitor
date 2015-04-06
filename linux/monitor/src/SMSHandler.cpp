@@ -11,6 +11,10 @@
  ********************************************************************************************************************* */
 
 #include "SMSHandler.h"
+#include <string.h>
+#include <stdio.h>
+#include "PDUMessage.h"
+#include "Logger.h"
 
 SMSHandler::SMSHandler()
 {
@@ -19,14 +23,47 @@ SMSHandler::SMSHandler()
 
 SMSHandler::~SMSHandler()
 {
+    m_serial.close();
 }
 
-SMSError SMSHandler::init(const char* szdeviceName)
+SMSError SMSHandler::init(const char* szdeviceName, unsigned long int speed)
 {
-    return SMSINIT_FAIL;
+    m_serial.open(szdeviceName, speed);
+    sendAtCommand(GET_SMSC);
+    int readBytes = m_serial.read(m_buff, sizeof(m_buff));
+    if (readBytes >=0){
+        m_buff[readBytes] = '\0';
+        //TODO extract here smsc number
+    }
+    return SMS_OK;
 
 }
 SMSError SMSHandler::sendMessage(const char* szPhoneNo, const char* szMessage)
 {
-    return SMSSEND_FAIL;
+    char cmgs[20];
+    char send_char[2] = {26, 0};
+
+    sendAtCommand("");
+    sendAtCommand(AT_SET_PDU);
+
+    PDUMessage pdu(m_smscNo, szPhoneNo);
+    size_t smscInfoLen = pdu.getSmscInfoLen();
+    const char* const pduMsg = pdu.getPDU(szMessage);
+    LOGGING("Sending message. PDU: %s", pduMsg);
+
+    sprintf(cmgs, "+CMGS=%d", (int)((strlen(pduMsg)/2) - smscInfoLen -1));
+    sendAtCommand(cmgs);
+    sendAtCommand(pduMsg);
+    sendAtCommand(send_char);
+    return SMS_OK;
+}
+
+void SMSHandler::sendAtCommand(const char* szAtCommand)
+{
+    sprintf(m_buff, "%s%s\r", AT_COMMAND, szAtCommand);
+    size_t lSend = strlen(m_buff);
+    size_t writeBytes= m_serial.write(m_buff, lSend);
+    if (lSend != writeBytes){
+        LOGGING("Actual written % bytes, expected &d bytes", writeBytes, lSend);
+    }
 }

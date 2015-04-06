@@ -17,7 +17,7 @@ class GSMUtils
 {
 
 public:
-    static int asciiToGsmCode(char* bytesList, size_t bytesLenght, char* encoddedBytes, size_t* encodedLength);
+    static int asciiToGsmCode(const char* bytesList, size_t bytesLenght, char* encoddedBytes, size_t* encodedLength);
 
     static int bytesToHex(const char* const bytesList, size_t bytesLenght, char* const encoddedBytes, size_t* encodedLength);
 

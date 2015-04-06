@@ -22,11 +22,13 @@ class PDUMessage
 public:
     PDUMessage(const char* szPhoneNo, const char* szSmsc);
     virtual ~PDUMessage();
-    const char* const getPDU(char* szMessage);
+    const char* const getPDU(const char* szMessage);
+    size_t getSmscInfoLen();
 
 private:
     char m_szPduMessage[MAX_PDU_LEN];
     size_t m_metaDataLen;
+    size_t smscLeng;
 };
 
 #endif /* INCLUDE_PDUMESSAGE_H_ */

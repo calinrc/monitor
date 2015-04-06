@@ -135,8 +135,8 @@ int main()
     GSMUtils::bytesToHex(gsm7BitMsg, gsm7BitsLen, hexBytesMsg, &hexBytesMsgLen);
     hexBytesMsg[hexBytesMsgLen] = '\0';
 
-    PDUMessage* msg = new PDUMessage("0040123450102", "+331213141516");
-    char* const szMsg = (char*) "TestMessage";
+    PDUMessage* msg = new PDUMessage("+40749169923", "+40744946000");
+    char* const szMsg = (char*) "Test123";
     const char* const pdu = msg->getPDU(szMsg);
     printf("PDU for TestMessage is: %s", pdu);
 
