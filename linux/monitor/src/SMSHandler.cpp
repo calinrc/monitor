@@ -2,11 +2,11 @@
  *    SMSHandler.cpp file written and maintained by Calin Cocan
  *    Created on: Mar 4, 2015
  *
- * This work is free: you can redistribute it and/or modify it under the terms of Apache License Version 2.0
+ * This work is free: you can redistribute it and/or modify it under the terms of GPL License Version 2.0
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the License for more details.
- * You should have received a copy of the License along with this program. If not, see <http://choosealicense.com/licenses/apache-2.0/>.
+ * You should have received a copy of the License along with this program. If not, see <http://choosealicense.com/licenses/gpl-2.0/>.
 
  ********************************************************************************************************************* */
 
@@ -41,7 +41,7 @@ SMSError SMSHandler::init(const char* szdeviceName, unsigned long int speed)
 SMSError SMSHandler::sendMessage(const char* szPhoneNo, const char* szMessage)
 {
     char cmgs[20];
-    char send_char[2] = {26, 0};
+    char ctrl_z_seq[2] = {26, 0};//send Ctrl+z
 
     sendAtCommand("");
     sendAtCommand(AT_SET_PDU);
@@ -54,7 +54,7 @@ SMSError SMSHandler::sendMessage(const char* szPhoneNo, const char* szMessage)
     sprintf(cmgs, "+CMGS=%d", (int)((strlen(pduMsg)/2) - smscInfoLen -1));
     sendAtCommand(cmgs);
     sendAtCommand(pduMsg);
-    sendAtCommand(send_char);
+    sendAtCommand(ctrl_z_seq);
     return SMS_OK;
 }
 
