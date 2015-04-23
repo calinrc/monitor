@@ -53,5 +53,22 @@ enum W_CLIENT_EVENT
 #define AT_SET_PDU "+CMGF=0" //Command to set the dongle into PDU mode
 #define GET_SMSC "+CSCA?"
 
+#define PHONE_NAME "phoneNo"
+
+#ifdef PREDEFINED_PHONE_NO
+    #define PHONE_NO PREDEFINED_PHONE_NO
+#else
+    #define PHONE_NO ""
+#endif
+
+#define I2C_ADDR 0x08
+
+#define I2C_DEVICE_NAME "i2cDeviceName"
+#define I2C_DEVICE_ADDRESS "/dev/i2c-1"
+
+
+#define GSM_DEVICE_NAME "gsmDeviceName"
+#define GSM_DEVICE_ADDRESS "/dev/ttyUSB0"
+
 
 #endif /* INCLUDE_GENDEF_H_ */

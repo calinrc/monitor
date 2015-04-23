@@ -4,31 +4,40 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/Conf.cpp \
 ../src/GSMUtils.cpp \
 ../src/I2CDevice.cpp \
 ../src/Logger.cpp \
+../src/NotificationService.cpp \
 ../src/PDUMessage.cpp \
 ../src/SMSHandler.cpp \
+../src/SMSNotificationHandler.cpp \
 ../src/Serial.cpp \
-../src/main.cpp 
+../src/boot.cpp 
 
 OBJS += \
+./src/Conf.o \
 ./src/GSMUtils.o \
 ./src/I2CDevice.o \
 ./src/Logger.o \
+./src/NotificationService.o \
 ./src/PDUMessage.o \
 ./src/SMSHandler.o \
+./src/SMSNotificationHandler.o \
 ./src/Serial.o \
-./src/main.o 
+./src/boot.o 
 
 CPP_DEPS += \
+./src/Conf.d \
 ./src/GSMUtils.d \
 ./src/I2CDevice.d \
 ./src/Logger.d \
+./src/NotificationService.d \
 ./src/PDUMessage.d \
 ./src/SMSHandler.d \
+./src/SMSNotificationHandler.d \
 ./src/Serial.d \
-./src/main.d 
+./src/boot.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

@@ -20,8 +20,7 @@
 #include "GSMUtils.h"
 #include "PDUMessage.h"
 
-#define I2C_ADDR 0x08
-#define I2C_DEVICE_NAME "/dev/i2c-1"
+
 /*
  * Information received from I2C
  *
