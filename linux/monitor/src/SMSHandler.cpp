@@ -44,16 +44,16 @@ SMSError SMSHandler::init(const char* szdeviceName, unsigned long int speed)
             string::size_type newFound = str.find('\n', found);
             string::size_type count = newFound != string::npos ? newFound - found : str.size() - found;
             string line = str.substr(found, count);
-            if (line.find("+CSCA", 0) != string::npos)
+            if (line.find("+CSCA", 0) == 0)
             {
                 string::size_type firstComa = line.find("\"");
                 string::size_type secondComa = line.find("\"", firstComa + 1);
-                string smsc = str.substr(firstComa + 1, secondComa - firstComa - 1);
+                string smsc = line.substr(firstComa + 1, secondComa - firstComa - 1);
                 strcpy(m_smscNo, smsc.c_str());
-            } else if (line.find("OK", 0) != string::npos)
+            } else if (line.find("OK", 0) == 0)
             {
                 LOGGING("Successfully got smsc");
-            } else if (line.find("OK", 0) != string::npos)
+            } else if (line.find("ERROR", 0) == 0)
             {
                 LOGGING("Failing on getting SMSC");
             }
