@@ -19,7 +19,7 @@
 
 #include "GSMUtils.h"
 #include "PDUMessage.h"
-
+#include "NotificationService.h"
 
 /*
  * Information received from I2C
@@ -75,7 +75,7 @@ int main()
 {
 
     printf("Enter ...\n");
-
+/*
     char bytes[] = { '1', '2', '3', '4', '5', '6', '7', '8', '1', '2', '3', '4', '5', '6', '7', '8', '1' };
     char encodedBytes[257];
     char gSM7BitBytes[257];
@@ -138,7 +138,10 @@ int main()
     char* const szMsg = (char*) "Test123";
     const char* const pdu = msg->getPDU(szMsg);
     printf("PDU for TestMessage is: %s", pdu);
+*/
 
+    NotificationService::getService()->notify();
+    printf("\nExit ...\n");
     return 0;
 
 }

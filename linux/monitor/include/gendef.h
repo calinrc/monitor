@@ -58,7 +58,7 @@ enum W_CLIENT_EVENT
 #ifdef PREDEFINED_PHONE_NO
     #define PHONE_NO PREDEFINED_PHONE_NO
 #else
-    #define PHONE_NO ""
+    #define PHONE_NO "123"
 #endif
 
 #define I2C_ADDR 0x08

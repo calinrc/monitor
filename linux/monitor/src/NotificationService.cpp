@@ -19,6 +19,7 @@ NotificationService* NotificationService::m_THIS = new NotificationService();
 NotificationService::NotificationService()
 {
     //TODO update this code with a more generic one
+#pragma message "Using phone number " PHONE_NO
     m_NotifHandlers.push_back(new SMSNotificationHandler(GSM_DEVICE_ADDRESS, 115200, PHONE_NO, "Alert send at "));
 }
 
