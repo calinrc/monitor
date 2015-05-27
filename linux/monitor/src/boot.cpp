@@ -139,6 +139,7 @@ int main()
     const char* const pdu = msg->getPDU(szMsg);
     printf("PDU for TestMessage is: %s", pdu);
 */
+    Logger::getInstance()->init(true, true);
 
     NotificationService::getService()->notify();
     printf("\nExit ...\n");

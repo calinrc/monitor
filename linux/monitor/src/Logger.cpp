@@ -19,7 +19,7 @@
 Logger* Logger::s_instance = new Logger();
 
 Logger::Logger() :
-        m_isFileLoggingEnabled(true), m_isConsoleLoggingEnabled(true), m_file(NULL)
+        m_isFileLoggingEnabled(false), m_isConsoleLoggingEnabled(false), m_file(NULL)
 {
 }
 
