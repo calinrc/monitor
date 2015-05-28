@@ -17,10 +17,12 @@
 #include <sys/types.h>
 #include <time.h>
 #include <stdio.h>
+#include "Logger.h"
 
 PDUMessage::PDUMessage(const char* szPhoneNo, const char* szSmsc) :
         m_metaDataLen(0),smscLeng(0)
 {
+    Logger::getInstance()->log("Used Phone Number %s , SMSC %s", szPhoneNo, szSmsc);
     size_t dPhoneFormat = 0;
     size_t dSMSCFormat = 0;
 

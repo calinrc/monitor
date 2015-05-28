@@ -31,7 +31,8 @@ SMSNotificationHandler::~SMSNotificationHandler()
 
 void SMSNotificationHandler::notify()
 {
-    char* cBuff = new char[170];
+    char cBuff[170];
+    char cTimeBuff[170];
 
     time_t zaman;
     struct tm *ltime;
@@ -42,10 +43,9 @@ void SMSNotificationHandler::notify()
     ltime = (struct tm *) localtime(&zaman);
     gettimeofday(&_t, &tz);
 
-    strftime(cBuff, 170, "%d.%m.%y %H:%M:%S", ltime);
-    sprintf(cBuff, "%s %s.%d", m_szMessageHeader, cBuff, (int) _t.tv_usec);
+    strftime(cTimeBuff, 170, "%d.%m.%y %H:%M:%S", ltime);
+    sprintf(cBuff, "%s %s.%d", m_szMessageHeader, cTimeBuff, (int) _t.tv_usec);
 
     this->m_handler->sendMessage(this->m_szPhoneNo, cBuff);
-    delete [] cBuff;
 }
 
