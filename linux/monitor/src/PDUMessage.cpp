@@ -47,9 +47,9 @@ PDUMessage::PDUMessage(const char* szPhoneNo, const char* szSmsc) :
     GSMUtils::semiDecimalOctets(szPhoneNoNew, phoneNoLen, phoneAdress, &encodedBytesPhoneNo);
     phoneAdress[encodedBytesPhoneNo] = '\0';
 
-    //0x11 - TP-MTI = SMS-SEND TP-VPF = Relative format used for the Validity Period.
+    //0x01 - TP-MTI = SMS-SEND TP-VPF = Relative format used for the Validity Period.
     //0x00 - TP-MR
-    sprintf(m_szPduMessage, "%.2X%.2X%s%.2X%.2X%.2X%.2X%s%.2X%.2X", (uint) smscLeng, (uint) dSMSCFormat, smscAdress, 0x11, 0x00, (uint) phoneNoLen, (uint) dPhoneFormat,
+    sprintf(m_szPduMessage, "%.2X%.2X%s%.2X%.2X%.2X%.2X%s%.2X%.2X", (uint) smscLeng, (uint) dSMSCFormat, smscAdress, 0x01, 0x00, (uint) phoneNoLen, (uint) dPhoneFormat,
             phoneAdress,
             PROTOCOL_ID,
             DATA_ENC_SCHEME);

@@ -48,7 +48,7 @@ enum W_CLIENT_EVENT
 #define INTERNATIONAL_PHONE_FORMAT 0x91
 #define MAX_PDU_LEN 170
 #define PROTOCOL_ID 0x00 //default SMS protocol
-#define DATA_ENC_SCHEME 0x00 //default GSM alphabet
+#define DATA_ENC_SCHEME 0x11 //default GSM 7 bit alphabet //try with 0x10 as well - this is Flash msg
 #define AT_COMMAND "AT"
 #define AT_SET_PDU "+CMGF=0" //Command to set the dongle into PDU mode
 #define GET_SMSC "+CSCA?"
