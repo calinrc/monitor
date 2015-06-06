@@ -12,6 +12,7 @@
 
 #include <unistd.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "Logger.h"
 #include "I2CDevice.h"
@@ -135,14 +136,16 @@ int main()
     hexBytesMsg[hexBytesMsgLen] = '\0';
 
     PDUMessage* msg = new PDUMessage("+40749169923", "+40744946000");
-    char* const szMsg = (char*) "Test123";
+    char* const szMsg = (char*) "Test";
     const char* const pdu = msg->getPDU(szMsg);
     printf("PDU for TestMessage is: %s", pdu);
+
 */
     Logger::getInstance()->init(true, true);
 
     NotificationService::getService()->notify();
     printf("\nExit ...\n");
+    getchar();
     return 0;
 
 }

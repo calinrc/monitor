@@ -43,22 +43,21 @@ enum W_CLIENT_EVENT
     POWER_CHECK
 };
 
-
 #define LOCAL_PHONE_FORMAT 0x81
 #define INTERNATIONAL_PHONE_FORMAT 0x91
 #define MAX_PDU_LEN 170
 #define PROTOCOL_ID 0x00 //default SMS protocol
-#define DATA_ENC_SCHEME 0x11 //default GSM 7 bit alphabet //try with 0x10 as well - this is Flash msg
-#define AT_COMMAND "AT"
+#define DATA_ENC_SCHEME 0x11 // 0x11 default GSM 7 bit alphabet //try with 0x10 as well - this is Flash msg
 #define AT_SET_PDU "+CMGF=0" //Command to set the dongle into PDU mode
 #define GET_SMSC "+CSCA?"
+#define CTRL_Z 26
 
 #define PHONE_NAME "phoneNo"
 
 #ifdef PREDEFINED_PHONE_NO
-    #define PHONE_NO PREDEFINED_PHONE_NO
+#define PHONE_NO PREDEFINED_PHONE_NO
 #else
-    #define PHONE_NO "123"
+#define PHONE_NO "123"
 #endif
 
 #define I2C_ADDR 0x08
@@ -66,9 +65,7 @@ enum W_CLIENT_EVENT
 #define I2C_DEVICE_NAME "i2cDeviceName"
 #define I2C_DEVICE_ADDRESS "/dev/i2c-1"
 
-
 #define GSM_DEVICE_NAME "gsmDeviceName"
 #define GSM_DEVICE_ADDRESS "/dev/ttyUSB0"
-
 
 #endif /* INCLUDE_GENDEF_H_ */

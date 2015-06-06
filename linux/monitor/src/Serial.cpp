@@ -86,7 +86,7 @@ int Serial::read(char *buf, int size)
     int ret = 0;
 
     int count = 0;
-    while (len < size && count < 3)
+    while (len < size && count < 2)
     {
         ret = ::read(m_fd, buf + len, size - len);
         if (ret == -1)

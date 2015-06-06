@@ -32,8 +32,7 @@ SMSHandler::~SMSHandler()
 SMSError SMSHandler::init(const char* szdeviceName, unsigned long int speed)
 {
     m_serial.open(szdeviceName, speed);
-    sendAtCommand(GET_SMSC);
-    int readBytes = m_serial.read(m_buff, sizeof(m_buff));
+    int readBytes = sendAtCommand(GET_SMSC);
     if (readBytes >= 0)
     {
         m_buff[readBytes] = '\0';
@@ -60,7 +59,6 @@ SMSError SMSHandler::init(const char* szdeviceName, unsigned long int speed)
             found = newFound != string::npos ? newFound + 1 : string::npos;
         }
 
-        //TODO extract here smsc number
     }
     return SMS_OK;
 
@@ -68,30 +66,51 @@ SMSError SMSHandler::init(const char* szdeviceName, unsigned long int speed)
 SMSError SMSHandler::sendMessage(const char* szPhoneNo, const char* szMessage)
 {
     char cmgs[20];
-    char ctrl_z_seq[2] = { 26, 0 }; //send Ctrl+z
+    char CTRL_Z_SEQ[1] = { CTRL_Z}; //send Ctrl+z
 
     sendAtCommand("");
     sendAtCommand(AT_SET_PDU);
 
-    PDUMessage pdu(m_smscNo, szPhoneNo);
-    size_t smscInfoLen = pdu.getSmscInfoLen();
+    PDUMessage pdu(szPhoneNo, m_smscNo);
     const char* const pduMsg = pdu.getPDU(szMessage);
     LOGGING("Sending message. PDU: %s", pduMsg);
+    size_t smscInfoLen = pdu.getSmscInfoLen();
+    size_t cmgsSize = (int) ((strlen(pduMsg) / 2) - smscInfoLen - 1);
 
-    sprintf(cmgs, "+CMGS=%d", (int) ((strlen(pduMsg) / 2) - smscInfoLen - 1));
+    sprintf(cmgs, "+CMGS=%d", cmgsSize);
     sendAtCommand(cmgs);
-    sendAtCommand(pduMsg);
-    sendAtCommand(ctrl_z_seq);
+    m_serial.write(pduMsg, strlen(pduMsg));
+    m_serial.write(CTRL_Z_SEQ, sizeof(CTRL_Z_SEQ));
+    int readBytes = m_serial.read(m_buff, sizeof(m_buff));
+    if (readBytes >= 0)
+    {
+        m_buff[readBytes] = '\0';
+    };
+    LOGGING("PDU message sent status length %d, message %s .", readBytes, m_buff);
+
     return SMS_OK;
 }
 
-void SMSHandler::sendAtCommand(const char* szAtCommand)
+int SMSHandler::sendAtCommand(const char* szAtCommand, bool read)
 {
-    sprintf(m_buff, "%s%s\r", AT_COMMAND, szAtCommand);
+    memset(m_buff, 0, sizeof(m_buff));
+    sprintf(m_buff, "AT%s\r", szAtCommand);
     size_t lSend = strlen(m_buff);
     size_t writeBytes = m_serial.write(m_buff, lSend);
+    LOGGING("%s", m_buff);
     if (lSend != writeBytes)
     {
-        LOGGING("Actual written % bytes, expected &d bytes", writeBytes, lSend);
+        LOGGING("Actual written %d bytes, expected %d bytes", writeBytes, lSend);
     }
+    int readBytes = 0;
+    if (read)
+    {
+        readBytes = m_serial.read(m_buff, sizeof(m_buff));
+        if (readBytes >= 0)
+        {
+            m_buff[readBytes] = '\0';
+        };
+        LOGGING("Actual read %d bytes, from message %s .", readBytes, m_buff);
+    }
+    return readBytes;
 }

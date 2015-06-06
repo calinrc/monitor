@@ -25,7 +25,7 @@ public:
     virtual SMSError sendMessage(const char* szPhoneNo, const char* szMessage);
 private:
 
-    void sendAtCommand(const char* szAtCommand);
+    int sendAtCommand(const char* szAtCommand, bool read = true);
 
     char m_buff[MAX_PDU_LEN];
 
