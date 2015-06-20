@@ -1,5 +1,5 @@
 /*
- *    NotificationHandler.h file written and maintained by Calin Cocan
+ *    SMSNotificationHandler.h file written and maintained by Calin Cocan
  *    Created on: Apr 23, 2015
  *
  * This work is free: you can redistribute it and/or modify it under the terms of GPL License Version 2.0
@@ -10,15 +10,25 @@
 
  ********************************************************************************************************************* */
 
-#ifndef INCLUDE_NOTIFICATIONHANDLER_H_
-#define INCLUDE_NOTIFICATIONHANDLER_H_
+#ifndef INCLUDE_LOGGERNOTIFICATIONHANDLER_H_
+#define INCLUDE_LOGGERNOTIFICATIONHANDLER_H_
 
-class NotificationHandler {
+#include "NotificationHandler.h"
+#include "Logger.h"
+
+class LoggerNotificationHandler : public NotificationHandler
+{
 public:
-	virtual ~NotificationHandler(){};
-
-	virtual void notify(const char* szMessage)=0;
-
+    LoggerNotificationHandler()
+    {
+    }
+    virtual ~LoggerNotificationHandler()
+    {
+    }
+    virtual void notify(const char* szMessage)
+    {
+        LOGGING(szMessage);
+    }
 };
 
-#endif /* INCLUDE_NOTIFICATIONHANDLER_H_ */
+#endif /* INCLUDE_LOGGERNOTIFICATIONHANDLER_H_ */

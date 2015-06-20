@@ -14,22 +14,21 @@
 #define INCLUDE_SMSNOTIFICATIONHANDLER_H_
 
 #include "NotificationHandler.h"
+#include <time.h>
 
 class SMSHandler;
 
 class SMSNotificationHandler : public NotificationHandler
 {
 public:
-    SMSNotificationHandler(const char* szdeviceName, unsigned long int speed, const char* szPhoneNo, const char* szMessage);
+    SMSNotificationHandler(const char* szdeviceName, unsigned long int speed, const char* szPhoneNo);
     virtual ~SMSNotificationHandler();
-
-    virtual void notify();
+    virtual void notify(const char* szMessage);
 
 private:
     SMSHandler* m_handler;
     const char* m_szPhoneNo;
-    const char* m_szMessageHeader;
-
+    time_t m_lastTime;
 };
 
 #endif /* INCLUDE_SMSNOTIFICATIONHANDLER_H_ */

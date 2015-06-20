@@ -12,13 +12,11 @@
 
 #include "SMSNotificationHandler.h"
 #include "SMSHandler.h"
-#include <stdio.h>
-#include <sys/time.h>
-#include <time.h>
 
+#define SMS_NOTIFICATION_INTERVAL 60 //60 seconds
 
-SMSNotificationHandler::SMSNotificationHandler(const char* szdeviceName, unsigned long int speed, const char* szPhoneNo, const char* szMessageHeader):
-        m_szPhoneNo(szPhoneNo), m_szMessageHeader(szMessageHeader)
+SMSNotificationHandler::SMSNotificationHandler(const char* szdeviceName, unsigned long int speed, const char* szPhoneNo) :
+        m_szPhoneNo(szPhoneNo), m_lastTime(0)
 {
     this->m_handler = new SMSHandler();
     this->m_handler->init(szdeviceName, speed);
@@ -29,23 +27,16 @@ SMSNotificationHandler::~SMSNotificationHandler()
     delete m_handler;
 }
 
-void SMSNotificationHandler::notify()
+void SMSNotificationHandler::notify(const char * szMessage)
 {
-    char cBuff[170];
-    char cTimeBuff[170];
-
-    time_t zaman;
-    struct tm *ltime;
-    static struct timeval _t;
-    static struct timezone tz;
-
-    time(&zaman);
-    ltime = (struct tm *) localtime(&zaman);
-    gettimeofday(&_t, &tz);
-
-    strftime(cTimeBuff, 170, "%d.%m.%y %H:%M:%S", ltime);
-    sprintf(cBuff, "%s %s.%d", m_szMessageHeader, cTimeBuff, (int) _t.tv_usec);
-
-    this->m_handler->sendMessage(this->m_szPhoneNo, cBuff);
+    time_t currentTime = 0;
+    if (((time_t) -1) != time(&currentTime))
+    {
+        if ((currentTime - m_lastTime) > SMS_NOTIFICATION_INTERVAL)
+        {
+            this->m_handler->sendMessage(this->m_szPhoneNo, szMessage);
+            m_lastTime = currentTime;
+        }
+    }
 }
 

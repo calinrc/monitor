@@ -29,7 +29,7 @@ private:
 	NotificationService();
 	virtual ~NotificationService();
 
-	static NotificationService* m_THIS;
+	static NotificationService* s_THIS;
 	list<NotificationHandler*> m_NotifHandlers;
 };
 
