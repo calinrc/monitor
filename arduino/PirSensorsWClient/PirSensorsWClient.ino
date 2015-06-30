@@ -108,8 +108,10 @@ void sendMoveMessage(int sensorsIds)
 {
   char msg[2] = {MOVE, '#'};
   msg[1] = sensorsIds;
-  vw_send((uint8_t *)msg, 2);
-  vw_wait_tx(); // Wait until the whole message is gone
+  for (int i =0 ; i<100; i++){
+    vw_send((uint8_t *)msg, 2);
+    vw_wait_tx(); // Wait until the whole message is gone
+  }
   blinkLed(sensorsIds);
 }
 

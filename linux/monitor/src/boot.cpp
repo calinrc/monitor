@@ -33,11 +33,12 @@
  *
  * */
 
-int main2()
+int main()
 {
     Logger::getInstance()->init(true, true);
+    LOGGING("Starting monitoring application...")
     I2CDevice i2c_device;
-    I2CError i2cerr = i2c_device.init(I2C_DEVICE_NAME, I2C_ADDR);
+    I2CError i2cerr = i2c_device.init(I2C_DEVICE_ADDRESS, I2C_ADDR);
     if (i2cerr == I2C_OK)
     {
         int eventType = 0;
@@ -51,7 +52,7 @@ int main2()
         LOGGING("Start monitoring")
         while (1)
         {
-            sleep(1); // do the i2c requests every 1 second
+            sleep(2); // do the i2c requests every 2 second
             if (i2c_device.send(1) == I2C_OK)
             {
                 usleep(10000);
@@ -72,7 +73,7 @@ int main2()
     return 0;
 }
 
-int main()
+int main2()
 {
 
     printf("Enter ...\n");
