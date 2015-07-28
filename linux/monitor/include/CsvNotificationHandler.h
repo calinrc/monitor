@@ -10,39 +10,54 @@
 
  ********************************************************************************************************************* */
 
-#ifndef INCLUDE_LOGGERNOTIFICATIONHANDLER_H_
-#define INCLUDE_LOGGERNOTIFICATIONHANDLER_H_
+#ifndef INCLUDE_CSVNOTIFICATIONHANDLER_H_
+#define INCLUDE_CSVNOTIFICATIONHANDLER_H_
 
 #include "NotificationHandler.h"
-#include "Logger.h"
+#include "gendef.h"
+#include <stddef.h>
 
-class LoggerNotificationHandler : public NotificationHandler
+class CsvNotificationHandler : public NotificationHandler
 {
 public:
-    LoggerNotificationHandler()
+    CsvNotificationHandler() :
+            m_file(NULL)
     {
+        m_file = fopen(CSV_FILE, "a");
     }
-    virtual ~LoggerNotificationHandler()
+    virtual ~CsvNotificationHandler()
     {
+        if (m_file != NULL)
+        {
+            fclose(m_file);
+            m_file = NULL;
+        }
     }
+
     virtual void alert(struct tm *ltime, int sensorId)
     {
-        strftime(cTimeBuff, 170, "%d.%m.%y %H:%M:%S", ltime);
-        sprintf(cBuff, "Alert received at %s for sensor %d", cTimeBuff, sensorId);
-        LOGGING(cBuff);
+        writeLine(ltime, false, sensorId);
     }
 
     virtual void status(struct tm *ltime)
     {
-        strftime(cTimeBuff, 170, "%d.%m.%y %H:%M:%S", ltime);
-        sprintf(cBuff, "%s %s", "Status received at ", cTimeBuff);
-        LOGGING(cBuff);
+        writeLine(ltime, true, 0);
     }
 
 private:
-    char cBuff[170];
+    void writeLine(struct tm *ltime, bool isStatus, int sensorId)
+    {
+        if (m_file != NULL)
+        {
+            strftime(cTimeBuff, 170, "%y.%m.%d %H:%M:%S", ltime);
+            fprintf(m_file, "%s,%d,%s\n", isStatus ? "Status" : "Alert", sensorId, cTimeBuff);
+            fflush(m_file);
+        }
+    }
+
     char cTimeBuff[170];
+    FILE* m_file;
 
 };
 
-#endif /* INCLUDE_LOGGERNOTIFICATIONHANDLER_H_ */
+#endif /* INCLUDE_CSVNOTIFICATIONHANDLER_H_ */

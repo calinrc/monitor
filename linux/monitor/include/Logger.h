@@ -15,8 +15,6 @@
 
 #include <stdio.h>
 
-#define LOG_FILE "monitor.log"
-
 class Logger
 {
 

@@ -17,7 +17,9 @@ class NotificationHandler {
 public:
 	virtual ~NotificationHandler(){};
 
-	virtual void notify(const char* szMessage)=0;
+	virtual void alert(struct tm *ltime, int sensorId)=0;
+
+	virtual void status(struct tm *ltime)=0;
 
 };
 

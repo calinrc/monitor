@@ -13,6 +13,7 @@
 #include "NotificationService.h"
 #include "SMSNotificationHandler.h"
 #include "LoggerNotificationHandler.h"
+#include "CsvNotificationHandler.h"
 #include "gendef.h"
 
 #include <stdio.h>
@@ -23,10 +24,11 @@ NotificationService* NotificationService::s_THIS = new NotificationService();
 
 NotificationService::NotificationService()
 {
-    //TODO update this code with a more generic one
 #pragma message "Using phone number " PHONE_NO
     m_NotifHandlers.push_back(new SMSNotificationHandler(GSM_DEVICE_ADDRESS, 115200, PHONE_NO));
     m_NotifHandlers.push_back(new LoggerNotificationHandler());
+    m_NotifHandlers.push_back(new CsvNotificationHandler());
+
 }
 
 NotificationService::~NotificationService()
@@ -38,26 +40,30 @@ NotificationService* NotificationService::getService()
     return s_THIS;
 }
 
-void NotificationService::notify()
+void NotificationService::alert(int sensorId)
 {
-    char cBuff[170];
-    char cTimeBuff[170];
-
     time_t zaman;
     struct tm *ltime;
-    static struct timeval _t;
-    static struct timezone tz;
 
     time(&zaman);
     ltime = (struct tm *) localtime(&zaman);
-    gettimeofday(&_t, &tz);
-
-    strftime(cTimeBuff, 170, "%d.%m.%y %H:%M:%S", ltime);
-    sprintf(cBuff, "%s %s.%d", "Alert send at ", cTimeBuff, (int) _t.tv_usec);
-
 
     for (list<NotificationHandler*>::iterator it = m_NotifHandlers.begin(); it != m_NotifHandlers.end(); it++)
     {
-        (*it)->notify(cBuff);
+        (*it)->alert(ltime, sensorId);
+    }
+}
+
+void NotificationService::status()
+{
+    time_t zaman;
+    struct tm *ltime;
+
+    time(&zaman);
+    ltime = (struct tm *) localtime(&zaman);
+
+    for (list<NotificationHandler*>::iterator it = m_NotifHandlers.begin(); it != m_NotifHandlers.end(); it++)
+    {
+        (*it)->status(ltime);
     }
 }

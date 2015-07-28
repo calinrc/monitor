@@ -68,4 +68,7 @@ enum W_CLIENT_EVENT
 #define GSM_DEVICE_NAME "gsmDeviceName"
 #define GSM_DEVICE_ADDRESS "/dev/ttyUSB0"
 
+#define LOG_FILE "monitor.log"
+#define CSV_FILE "logging.csv"
+
 #endif /* INCLUDE_GENDEF_H_ */

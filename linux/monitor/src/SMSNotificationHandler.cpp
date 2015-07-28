@@ -12,6 +12,7 @@
 
 #include "SMSNotificationHandler.h"
 #include "SMSHandler.h"
+#include <stdio.h>
 
 #define SMS_NOTIFICATION_INTERVAL 60 //60 seconds
 
@@ -27,16 +28,23 @@ SMSNotificationHandler::~SMSNotificationHandler()
     delete m_handler;
 }
 
-void SMSNotificationHandler::notify(const char * szMessage)
+void SMSNotificationHandler::alert(struct tm *ltime, int sensorId)
 {
     time_t currentTime = 0;
     if (((time_t) -1) != time(&currentTime))
     {
         if ((currentTime - m_lastTime) > SMS_NOTIFICATION_INTERVAL)
         {
-            this->m_handler->sendMessage(this->m_szPhoneNo, szMessage);
+            strftime(cTimeBuff, 170, "%d.%m.%y %H:%M:%S", ltime);
+            sprintf(cBuff, "Alert received at %s for sensor %d", cTimeBuff, sensorId);
+            this->m_handler->sendMessage(this->m_szPhoneNo, cBuff);
             m_lastTime = currentTime;
         }
     }
+}
+
+void SMSNotificationHandler::status(struct tm *ltime)
+{
+    //DO nothing
 }
 

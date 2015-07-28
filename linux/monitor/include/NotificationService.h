@@ -23,7 +23,8 @@ class NotificationService {
 
 public:
     static NotificationService* getService();
-    void notify();
+    void alert(int sensorId);
+    void status();
 
 private:
 	NotificationService();

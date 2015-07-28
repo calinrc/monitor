@@ -23,12 +23,16 @@ class SMSNotificationHandler : public NotificationHandler
 public:
     SMSNotificationHandler(const char* szdeviceName, unsigned long int speed, const char* szPhoneNo);
     virtual ~SMSNotificationHandler();
-    virtual void notify(const char* szMessage);
+    virtual void alert(struct tm *ltime, int sensorId);
+    virtual void status(struct tm *ltime);
 
 private:
     SMSHandler* m_handler;
     const char* m_szPhoneNo;
     time_t m_lastTime;
+
+    char cBuff[170];
+    char cTimeBuff[170];
 };
 
 #endif /* INCLUDE_SMSNOTIFICATIONHANDLER_H_ */

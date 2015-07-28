@@ -11,6 +11,7 @@
  ********************************************************************************************************************* */
 
 #include "Logger.h"
+#include "gendef.h"
 #include <fcntl.h>
 #include <stdarg.h>
 #include <sys/time.h>
