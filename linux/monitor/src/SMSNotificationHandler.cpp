@@ -14,7 +14,7 @@
 #include "SMSHandler.h"
 #include <stdio.h>
 
-#define SMS_NOTIFICATION_INTERVAL 60 //60 seconds
+#define SMS_NOTIFICATION_INTERVAL 3*60 //60 seconds
 
 SMSNotificationHandler::SMSNotificationHandler(const char* szdeviceName, unsigned long int speed, const char* szPhoneNo) :
         m_szPhoneNo(szPhoneNo), m_lastTime(0)

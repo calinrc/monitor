@@ -68,8 +68,10 @@ I2CError I2CDevice::send(int commandId)
     if (write(m_fd, m_buff, 1) != 1)
     {
         LOGGING("Error writing file: %s", strerror(errno));
+        return I2CWRITE_FAIL;
     }
-    return I2CWRITE_FAIL;
+    return I2C_OK;
+
 }
 
 I2CError I2CDevice::close()
