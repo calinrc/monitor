@@ -74,7 +74,7 @@ void loop()
     }
      state = RECEIVED;
   }
-  delay(1000);
+  delay(900);
   vw_rx_start();
 }
 
