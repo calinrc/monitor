@@ -23,6 +23,7 @@ class NotificationService {
 
 public:
     static NotificationService* getService();
+    void registerHandler(NotificationHandler* notificationHandler);
     void alert(int sensorId);
     void status();
 

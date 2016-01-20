@@ -22,6 +22,10 @@
 #include "PDUMessage.h"
 #include "NotificationService.h"
 
+#include "SMSNotificationHandler.h"
+#include "LoggerNotificationHandler.h"
+#include "CsvNotificationHandler.h"
+
 /*
  * Information received from I2C
  *
@@ -33,12 +37,35 @@
  *
  * */
 
+const char* eventTypeToMsg(W_CLIENT_EVENT event){
+    switch (event){
+        case NONE: return CLIENT_EVENT_NONE;
+        case MOVE: return CLIENT_EVENT_MOVE;
+        case POWER_CHECK: return CLIENT_EVENT_POWER_CHECK;
+        default: return CLIENT_EVENT_UNNOWN;
+    }
+}
+
+const char* i2CStateToMsg(I2C_CLIENT_STATE state){
+    switch(state){
+        case EMPTY: return I2C_CLIENT_STATE_EMPTY;
+        case RECEIVED: return I2C_CLIENT_STATE_RECEIVED;
+        case SENT : return I2C_CLIENT_STATE_SENT;
+        default: return I2C_CLIENT_STATE_UNKNOWN;
+    }
+}
+
 int main()
 {
     Logger::getInstance()->init(true, true);
     LOGGING("Starting monitoring application...")
     I2CDevice i2c_device;
     I2CError i2cerr = i2c_device.init(I2C_DEVICE_ADDRESS, I2C_ADDR);
+#pragma message "Using phone number " PHONE_NO
+
+    //NotificationService::getService()->registerHandler(new SMSNotificationHandler(GSM_DEVICE_ADDRESS, 115200, PHONE_NO));
+    NotificationService::getService()->registerHandler(new LoggerNotificationHandler());
+    NotificationService::getService()->registerHandler(new CsvNotificationHandler());
     if (i2cerr == I2C_OK)
     {
         int eventType = 0;
@@ -73,7 +100,7 @@ int main()
                     if (eventType == MOVE){
 
                     }
-                    LOGGING("SensorsData: %d:%d %d", eventType, transmissionState, sensorsId)
+                    LOGGING("SensorsData: EventType %s \t\tI2CState:%s \t\t Sensors IDS: %d", eventTypeToMsg(static_cast<W_CLIENT_EVENT>(eventType)), i2CStateToMsg(static_cast<I2C_CLIENT_STATE>(transmissionState)), sensorsId)
                     oldStateEventType = eventType;
                     oldStateTransmissionState = transmissionState;
                     oldStateSensorsIds = sensorsId;

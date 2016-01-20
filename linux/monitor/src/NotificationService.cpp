@@ -11,10 +11,7 @@
  ********************************************************************************************************************* */
 
 #include "NotificationService.h"
-#include "SMSNotificationHandler.h"
-#include "LoggerNotificationHandler.h"
-#include "CsvNotificationHandler.h"
-#include "gendef.h"
+#include "NotificationHandler.h"
 
 #include <stdio.h>
 #include <sys/time.h>
@@ -24,11 +21,6 @@ NotificationService* NotificationService::s_THIS = new NotificationService();
 
 NotificationService::NotificationService()
 {
-#pragma message "Using phone number " PHONE_NO
-    m_NotifHandlers.push_back(new SMSNotificationHandler(GSM_DEVICE_ADDRESS, 115200, PHONE_NO));
-    m_NotifHandlers.push_back(new LoggerNotificationHandler());
-    m_NotifHandlers.push_back(new CsvNotificationHandler());
-
 }
 
 NotificationService::~NotificationService()
@@ -38,6 +30,11 @@ NotificationService::~NotificationService()
 NotificationService* NotificationService::getService()
 {
     return s_THIS;
+}
+
+void NotificationService::registerHandler(NotificationHandler* notificationHandler)
+{
+    m_NotifHandlers.push_back(notificationHandler);
 }
 
 void NotificationService::alert(int sensorId)
